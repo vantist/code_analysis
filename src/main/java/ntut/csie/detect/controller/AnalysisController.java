@@ -3,6 +3,7 @@ package ntut.csie.detect.controller;
 import javax.servlet.ServletContext;
 
 import ntut.csie.detect.service.FileManagerService;
+import ntut.csie.detect.service.impl.AnalysisJarService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -20,6 +21,9 @@ public class AnalysisController {
 	
 	@Autowired
 	private FileManagerService fileManagerService;
+	
+	@Autowired
+	private AnalysisJarService analysisJarService;
 	
 	/*
 	 * 分析Jar檔

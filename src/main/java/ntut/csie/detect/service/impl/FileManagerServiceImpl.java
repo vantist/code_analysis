@@ -7,7 +7,12 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.springframework.core.io.PathResource;
 import org.springframework.stereotype.Service;
 
 import ntut.csie.detect.service.FileManagerService;
@@ -50,4 +55,44 @@ public class FileManagerServiceImpl implements FileManagerService {
 	    }
 	}
 
+	@Override
+	public Boolean checkFiles(String path) {
+		File folder = new File(path);
+		
+		if (folder.isDirectory() && folder.list().length > 0)
+			return true;
+		
+		return false;
+	}
+
+	@Override
+	public List<File> getFiles(String path) {
+		File folder = new File(path);
+		List<File> files = new ArrayList<File>();
+		
+		addFolderFiles(folder, files);
+		
+		return files;
+	}
+	
+	private void addFolderFiles(File file, List<File> fileList) {
+		File childFile;
+		
+		try	{	
+			for (int i = 0; i < file.listFiles().length; i++) {
+				childFile = file.listFiles()[i];
+				
+				if (childFile.isHidden())
+					continue;
+				
+				if (childFile.isDirectory()) {
+					addFolderFiles(childFile, fileList);
+				} else {
+					fileList.add(childFile);
+				}
+			}
+		} catch (Exception e) {
+			return;
+		}
+	}
 }

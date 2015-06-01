@@ -1,7 +1,11 @@
 package ntut.csie.detect.service;
 
+import org.springframework.web.multipart.MultipartFile;
+
+import ntut.csie.detect.component.AnalysisFile;
+
 public interface AnalysisService {
-	Boolean check();
+	Boolean check(AnalysisFile file);
 	void analysis();
-	void save();
+	void save(MultipartFile file);
 }
