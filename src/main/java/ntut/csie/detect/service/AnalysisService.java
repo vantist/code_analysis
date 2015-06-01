@@ -7,5 +7,5 @@ import ntut.csie.detect.component.AnalysisFile;
 public interface AnalysisService {
 	Boolean check(AnalysisFile file);
 	void analysis();
-	void save(MultipartFile file);
+	String save(MultipartFile file);
 }

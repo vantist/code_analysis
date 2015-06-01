@@ -1,32 +1,27 @@
-package ntut.csie.detect.service.impl;
+package ntut.csie.detect.util;
 
 import java.io.File;
 import java.io.IOException;
 
-import org.springframework.stereotype.Service;
-
-import ntut.csie.detect.service.CommandExecutorService;
-
-@Service("CommandExecutorService")
-public class CommandExecutorServiceImpl implements CommandExecutorService {
+public class CommandExecutorUtil implements Runnable {
 	private String[] command;
 	private String directory = "";
 	private ProcessBuilder processBuilder;
 	private Boolean running = false;
 	
-	public CommandExecutorServiceImpl() {
+	public CommandExecutorUtil() {
 	}
 	
-	public CommandExecutorServiceImpl(String[] command) {
+	public CommandExecutorUtil(String[] command) {
 		this.command = command;
 	}
 	
-	public CommandExecutorServiceImpl(String command, String directory) {
+	public CommandExecutorUtil(String command, String directory) {
 		this.command = command.split(" ");
 		this.directory = directory;
 	}
 	
-	public CommandExecutorServiceImpl(String[] command, String directory) {
+	public CommandExecutorUtil(String[] command, String directory) {
 		this.command = command;
 		this.directory = directory;
 	}
@@ -50,22 +45,18 @@ public class CommandExecutorServiceImpl implements CommandExecutorService {
 		}
 	}
 
-	@Override
 	public void setCommand(String command) {
 		this.command = command.split(" ");
 	}
 
-	@Override
 	public void setCommand(String[] command) {
 		this.command = command;
 	}
 
-	@Override
 	public void setDirectory(String directory) {
 		this.directory = directory;
 	}
 
-	@Override
 	public Boolean isRunning() {
 		return running;
 	}
