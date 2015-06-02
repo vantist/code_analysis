@@ -5,20 +5,29 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.servlet.ServletContext;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import ntut.csie.detect.component.Report;
+import ntut.csie.detect.configuration.AnalysisConfiguration;
 import ntut.csie.detect.service.FileManagerService;
 import ntut.csie.detect.service.ReportService;
 
-@Service("ReportService")
-public class ReportServiceImpl implements ReportService {
+@Service("FindbugsReportService")
+public class FindbugsReportService implements ReportService {
 	private String path = "";
 	private List<Report> reports = new ArrayList<Report>();
 	
 	@Autowired
 	FileManagerService fileManagerService;
+	
+	@Autowired
+	public FindbugsReportService(ServletContext context) {
+		path = context.getRealPath(AnalysisConfiguration.reportPathPrefix);
+	}
 	
 	private void updateList() {
 		List<File> files = fileManagerService.getFiles(path);
@@ -31,8 +40,8 @@ public class ReportServiceImpl implements ReportService {
 	}
 	
 	@Override
-	public Boolean checkReport() {
-		Boolean exist = fileManagerService.checkFiles(path);
+	public boolean checkReport() {
+		boolean exist = fileManagerService.checkFiles(path);
 		
 		if (exist)
 			updateList();
@@ -60,4 +69,9 @@ public class ReportServiceImpl implements ReportService {
 		return path;
 	}
 
+	@Scheduled(fixedDelay = 2000)
+	public void scheduleCheck() {
+		System.out.println("檢查報表是否存在：" + (checkReport()?"存在":"不存在"));
+		System.out.println("目前報表數量：" + reports.size());
+	}
 }

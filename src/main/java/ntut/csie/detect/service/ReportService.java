@@ -10,7 +10,7 @@ public interface ReportService {
 	String getReportPath();	
 	
 	// 檢查是否有報表
-	Boolean checkReport();
+	boolean checkReport();
 	
 	// 取得報表列表	
 	List<Report> getReports();
