@@ -1,6 +1,7 @@
 package ntut.csie.detect.controller;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -9,5 +10,10 @@ public class ViewController {
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public String home() {
 		return "/index";
+	}
+
+	@RequestMapping(value = {"/report/"}, method = RequestMethod.GET)
+	public String report() {
+		return "/report";
 	}
 }

@@ -1,11 +1,14 @@
 package ntut.csie.detect.service;
 
-import org.springframework.web.multipart.MultipartFile;
+import java.util.List;
 
 import ntut.csie.detect.component.AnalysisFile;
 
 public interface AnalysisService {
-	Boolean check(AnalysisFile file);
+	List<AnalysisFile> getRunningJobs();
+	List<AnalysisFile> getWaitingJobs();
+	int checkRunningJobs();
+	int checkWaitingJobs();
 	void analysis();
-	String save(MultipartFile file);
+	String save(AnalysisFile file);
 }

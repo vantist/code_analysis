@@ -3,14 +3,20 @@ package ntut.csie.detect.util.impl;
 import java.io.File;
 import java.io.IOException;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import ntut.csie.detect.configuration.AnalysisConfiguration;
+import ntut.csie.detect.service.FileManagerService;
+import ntut.csie.detect.service.impl.FileManagerServiceImpl;
 import ntut.csie.detect.util.CommandExecutorUtil;
 
 public class FindbugsExecutor implements CommandExecutorUtil {
 	private String[] command;
 	private String directory = "";
 	private ProcessBuilder processBuilder;
-	private Boolean running = false;
+	
+	@Autowired
+	FileManagerService fileManagerService;
 	
 	public FindbugsExecutor() {
 	}
@@ -24,29 +30,42 @@ public class FindbugsExecutor implements CommandExecutorUtil {
 		processBuilder = new ProcessBuilder(
 				"java", 
         		"-jar",
-        		"./findbugs/lib/findbugs.jar",
+        		"." + AnalysisConfiguration.findbugsPathPrefix + "findbugs.jar",
         		"-textui",
         		"-xml",
         		"-bugCategories",
         		"security",
-        		directory + AnalysisConfiguration.analysisPathPrefix + command[0],
-        		">",
-        		directory + AnalysisConfiguration.reportPathPrefix + command[0] + "_report.xml"
+        		"." + AnalysisConfiguration.analysisPathPrefix + command[0]
         );
 		processBuilder.directory(new File(directory));
 	}
 
 	@Override
 	public void run() {
+		System.out.println("掃描任務開始初始");
 		init();
 		
 		try {
-			running = true;
-			processBuilder.start();
+			System.out.println("掃描任務開始運行");
+			
+			Process p = processBuilder.start();
+			p.waitFor();
+			
+			if (fileManagerService == null)
+				fileManagerService = new FileManagerServiceImpl();
+			
+			fileManagerService.saveFile(
+					directory + AnalysisConfiguration.reportPathPrefix + command[0] + ".xml",
+					p.getInputStream()
+			);
+			
 		} catch (IOException e) {
 			e.printStackTrace();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
 		} finally {
-			running = false;
+			System.out.println("掃描任務運行結束");
+
 		}
 	}
 
@@ -60,9 +79,5 @@ public class FindbugsExecutor implements CommandExecutorUtil {
 
 	public void setDirectory(String directory) {
 		this.directory = directory;
-	}
-
-	public Boolean isRunning() {
-		return running;
 	}
 }

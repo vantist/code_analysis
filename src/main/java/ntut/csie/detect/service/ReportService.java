@@ -5,8 +5,6 @@ import java.util.List;
 import ntut.csie.detect.component.Report;
 
 public interface ReportService {
-	void setReportPath(String path);
-	
 	String getReportPath();	
 	
 	// 檢查是否有報表

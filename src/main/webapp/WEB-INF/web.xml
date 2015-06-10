@@ -53,9 +53,9 @@
 	</servlet-mapping>
 	<!-- spring web -->
  
-	<listener>
+<!-- 	<listener>
 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
-	</listener>
+	</listener> -->
  
 	<context-param>
 		<param-name>contextConfigLocation</param-name>

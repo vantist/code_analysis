@@ -10,8 +10,10 @@ public interface FileManagerService {
 	String readFile(String fileName) throws IOException;
 	
 	// 確認資料夾下是否有檔案存在
-	Boolean checkFiles(String path);
+	boolean checkFiles(String path);
 	
 	// 取得資料夾下所有檔案資訊	
 	List<File> getFiles(String path);
+	
+	boolean removeFile(String path);
 }

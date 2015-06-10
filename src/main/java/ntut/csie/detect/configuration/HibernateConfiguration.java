@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  
 @Configuration
 @EnableTransactionManagement
-@ComponentScan({ "ntut.csie.detect.configuration" })
+//@ComponentScan({ "ntut.csie.detect.configuration" })
 @PropertySource(value = { "classpath:hibernate.properties" })
 public class HibernateConfiguration {
  

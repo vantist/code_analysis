@@ -29,7 +29,7 @@
 
 				<div class="collapse navbar-collapse" id="navbar-collapse">
 					<ul class="nav navbar-nav">
-						<li class="active"><a href="/">分析 <span class="sr-only">(current)</span></a></li>
+						<li class="active"><a href="./">分析 <span class="sr-only">(current)</span></a></li>
 					</ul>
 				</div>
 			</div>
@@ -51,11 +51,17 @@
 		<div class="panel panel-info">
 			<div class="panel-heading">分析結果</div>
 			<div class="panel-body">
-				<div class="progress">
-					<div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
-						<span class="sr-only">100% Complete</span>
-					</div>
-				</div>
+				<table class="table table-hover table-result">
+					<thead>
+						<tr>
+							<th>#</th>
+							<th>檔名</th>
+							<th>上傳時間</th>
+							<th>狀態</th>
+						</tr>
+					</thead>
+					<tbody></tbody>
+				</table>
 			</div>
 		</div>
 	</div>

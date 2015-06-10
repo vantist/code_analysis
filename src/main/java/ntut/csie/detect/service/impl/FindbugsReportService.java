@@ -39,12 +39,19 @@ public class FindbugsReportService implements ReportService {
 		}
 	}
 	
+	@Scheduled(fixedDelay = 1000)
+	private void scheduledCheck() {
+		checkReport();
+	}
+	
 	@Override
 	public boolean checkReport() {
 		boolean exist = fileManagerService.checkFiles(path);
 		
 		if (exist)
 			updateList();
+		else if (!exist && reports.size() > 0)
+			reports.clear();
 		
 		return exist;
 	}
@@ -60,18 +67,7 @@ public class FindbugsReportService implements ReportService {
 	}
 
 	@Override
-	public void setReportPath(String path) {
-		this.path = path;
-	}
-
-	@Override
 	public String getReportPath() {
 		return path;
-	}
-
-	@Scheduled(fixedDelay = 2000)
-	public void scheduleCheck() {
-		System.out.println("檢查報表是否存在：" + (checkReport()?"存在":"不存在"));
-		System.out.println("目前報表數量：" + reports.size());
 	}
 }
