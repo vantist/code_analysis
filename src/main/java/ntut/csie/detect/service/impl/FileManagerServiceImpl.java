@@ -112,9 +112,12 @@ public class FileManagerServiceImpl implements FileManagerService {
 }
 
 class AnalysisFileFilter implements FilenameFilter {
-
 	@Override
 	public boolean accept(File dir, String name) {
-		return name.endsWith(".jar") || name.endsWith(".xml");
+		return name.endsWith(".jar")
+			|| name.endsWith(".xml")
+			|| name.endsWith(".war")
+			|| name.endsWith(".zip")
+			|| name.endsWith(".html");
 	}
 }

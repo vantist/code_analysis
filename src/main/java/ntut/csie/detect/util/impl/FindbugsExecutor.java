@@ -2,7 +2,9 @@ package ntut.csie.detect.util.impl;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.StringWriter;
 
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import ntut.csie.detect.configuration.AnalysisConfiguration;
@@ -27,14 +29,18 @@ public class FindbugsExecutor implements CommandExecutorUtil {
 	}
 	
 	public void init() {
+		if (fileManagerService == null)
+			fileManagerService = new FileManagerServiceImpl();
+		
 		processBuilder = new ProcessBuilder(
 				"java", 
+				"-Xmx2048m",
         		"-jar",
         		"." + AnalysisConfiguration.findbugsPathPrefix + "findbugs.jar",
         		"-textui",
-        		"-xml",
-        		"-bugCategories",
-        		"security",
+        		"-html",
+//        		"-bugCategories",
+//        		"security",
         		"." + AnalysisConfiguration.analysisPathPrefix + command[0]
         );
 		processBuilder.directory(new File(directory));
@@ -49,20 +55,19 @@ public class FindbugsExecutor implements CommandExecutorUtil {
 			System.out.println("掃描任務開始運行");
 			
 			Process p = processBuilder.start();
-			p.waitFor();
 			
-			if (fileManagerService == null)
-				fileManagerService = new FileManagerServiceImpl();
+			StringWriter writer = new StringWriter();
+			IOUtils.copy(p.getErrorStream(), writer, "UTF-8");
+			System.out.println("錯誤訊息：\n" + writer.toString());
 			
 			fileManagerService.saveFile(
-					directory + AnalysisConfiguration.reportPathPrefix + command[0] + ".xml",
+					directory + AnalysisConfiguration.reportPathPrefix + command[0] + ".html",
 					p.getInputStream()
 			);
-			
 		} catch (IOException e) {
 			e.printStackTrace();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
+//		} catch (InterruptedException e) {
+//			e.printStackTrace();
 		} finally {
 			System.out.println("掃描任務運行結束");
 

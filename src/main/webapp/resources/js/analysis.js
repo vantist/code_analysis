@@ -24,7 +24,7 @@
 			for (var i = states.reports.length - 1; i >= 0; i--) {
 				var file = states.reports[i];
 				file.time = file.fileName.split('_')[0];
-				file.fileName = '<a href="./report/#' + i + '">' + file.fileName.split("_")[1].replace(".xml", "") + '</a>';
+				file.fileName = '<a href="./report/#' + i + '">' + file.fileName.substring(file.fileName.indexOf('_')+1, file.fileName.lastIndexOf('.')) + '</a>';
 				file.state = 'finished';
 				filesList.push(file);
 			};
@@ -32,7 +32,7 @@
 			for (var i = states.waitingJobs.length - 1; i >= 0; i--) {
 				var file = states.waitingJobs[i];
 				file.time = file.fileName.split('_')[0];
-				file.fileName = file.fileName.split("_")[1];
+				file.fileName = file.fileName.substring(file.fileName.indexOf('_')+1);
 				file.state = 'waiting';
 				filesList.push(file);
 			};
@@ -40,7 +40,7 @@
 			for (var i = states.runningJobs.length - 1; i >= 0; i--) {
 				var file = states.runningJobs[i];
 				file.time = file.fileName.split('_')[0];
-				file.fileName = file.fileName.split("_")[1];
+				file.fileName = file.fileName.substring(file.fileName.indexOf('_')+1);
 				file.state = 'running';
 				filesList.push(file);
 			};
