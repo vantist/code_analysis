@@ -8,39 +8,27 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.PrintWriter;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.io.filefilter.FileFileFilter;
-import org.springframework.core.io.PathResource;
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonParser;
-
 import ntut.csie.detect.service.FileManagerService;
+import ntut.csie.detect.util.LogUtil;
 
 @Service("FileManagerService")
 public class FileManagerServiceImpl implements FileManagerService {
+	private final String logPrefix = "[FileManagerService]";	
+	
 	public void saveFile(String folder, String fileName, InputStream fileInputStream) throws IOException {
 		saveFile(folder.concat(File.separator).concat(fileName), fileInputStream);
 	}
 
 	@Override
 	public void saveFile(String path, InputStream fileInputStream) throws IOException {
-		OutputStream out = new FileOutputStream(new File(path));
-		
-        int read = 0;
-        final byte[] bytes = new byte[1024];
-
-        while ((read = fileInputStream.read(bytes)) != -1) {
-            out.write(bytes, 0, read);
-        }
-        
-        out.close();
+		AsyncSaveFile asyncSaveFile = new AsyncSaveFile(path, fileInputStream);
+		Thread thread = new Thread(asyncSaveFile);
+		thread.start();
 	}
 
 	@Override
@@ -111,6 +99,9 @@ public class FileManagerServiceImpl implements FileManagerService {
 	}
 }
 
+/*
+ * 實做附檔名篩選器
+ */
 class AnalysisFileFilter implements FilenameFilter {
 	@Override
 	public boolean accept(File dir, String name) {
@@ -119,5 +110,43 @@ class AnalysisFileFilter implements FilenameFilter {
 			|| name.endsWith(".war")
 			|| name.endsWith(".zip")
 			|| name.endsWith(".html");
+	}
+}
+
+/*
+ * 實做異步存檔
+ */
+class AsyncSaveFile implements Runnable {
+	private String path;
+	private InputStream fileInputStream;
+	private final String logPrefix = "[FileManagerService/AsyncSaveFile]";
+	
+	public AsyncSaveFile(String path, InputStream fileInputStream) {
+		this.path = path;
+		this.fileInputStream = fileInputStream;
+	}
+
+	@Override
+	public void run() {
+		try {
+			OutputStream out;
+			
+	        int read = 0;
+	        final byte[] bytes = new byte[1024];
+	        
+	        read = fileInputStream.read(bytes);
+	        out = new FileOutputStream(new File(path));
+
+	        while (read != -1) {
+	            out.write(bytes, 0, read);
+	            read = fileInputStream.read(bytes);
+	        }
+	        
+	        out.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			LogUtil.log(path + " 輸出成功", logPrefix);
+		}
 	}
 }

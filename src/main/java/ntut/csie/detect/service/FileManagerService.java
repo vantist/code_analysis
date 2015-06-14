@@ -7,6 +7,7 @@ import java.util.List;
 
 public interface FileManagerService {
 	void saveFile(String path, InputStream fileInputStream) throws IOException;
+	
 	String readFile(String fileName) throws IOException;
 	
 	// 確認資料夾下是否有檔案存在

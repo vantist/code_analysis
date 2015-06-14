@@ -61,15 +61,11 @@ public class AnalysisController {
 	@RequestMapping(value = "/report/{id}", method = RequestMethod.POST)
 	@ResponseBody
 	public String getReport(@PathVariable("id") int id) {
-		
-		
-		
 		try {
 			return fileManagerService.readFile(reportService.getReport(id).getPath());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
 		return "";
 	}
 }

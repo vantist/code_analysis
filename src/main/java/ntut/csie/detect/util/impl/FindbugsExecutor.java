@@ -11,11 +11,14 @@ import ntut.csie.detect.configuration.AnalysisConfiguration;
 import ntut.csie.detect.service.FileManagerService;
 import ntut.csie.detect.service.impl.FileManagerServiceImpl;
 import ntut.csie.detect.util.CommandExecutorUtil;
+import ntut.csie.detect.util.LogUtil;
 
 public class FindbugsExecutor implements CommandExecutorUtil {
 	private String[] command;
 	private String directory = "";
 	private ProcessBuilder processBuilder;
+	
+	private final String logPrefix = "[FindbugsExecutor]";
 	
 	@Autowired
 	FileManagerService fileManagerService;
@@ -48,29 +51,26 @@ public class FindbugsExecutor implements CommandExecutorUtil {
 
 	@Override
 	public void run() {
-		System.out.println("掃描任務開始初始");
+		LogUtil.log("掃描任務開始初始", logPrefix);
 		init();
 		
 		try {
-			System.out.println("掃描任務開始運行");
+			LogUtil.log("掃描任務開始運行", logPrefix);
 			
 			Process p = processBuilder.start();
-			
-			StringWriter writer = new StringWriter();
-			IOUtils.copy(p.getErrorStream(), writer, "UTF-8");
-			System.out.println("錯誤訊息：\n" + writer.toString());
 			
 			fileManagerService.saveFile(
 					directory + AnalysisConfiguration.reportPathPrefix + command[0] + ".html",
 					p.getInputStream()
 			);
+			
+			p.waitFor();
 		} catch (IOException e) {
 			e.printStackTrace();
-//		} catch (InterruptedException e) {
-//			e.printStackTrace();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
 		} finally {
-			System.out.println("掃描任務運行結束");
-
+			LogUtil.log("掃描任務運行結束", logPrefix);
 		}
 	}
 

@@ -21,6 +21,7 @@ import ntut.csie.detect.component.AnalysisFile;
 import ntut.csie.detect.configuration.AnalysisConfiguration;
 import ntut.csie.detect.service.AnalysisService;
 import ntut.csie.detect.service.FileManagerService;
+import ntut.csie.detect.util.LogUtil;
 import ntut.csie.detect.util.impl.FindbugsExecutor;
 
 @Service("AnalysisJarService")
@@ -29,6 +30,8 @@ public class AnalysisJarService implements AnalysisService {
 	private List<AnalysisFile> analysisFiles = new ArrayList<AnalysisFile>();
 	private Set<Thread> findbugsExecutors = new HashSet<Thread>();
 	private String path;
+	
+	private final String logPrefix = "[AnalysisJarService]";
 	
 	@Autowired
 	private FileManagerService fileManagerService;
@@ -45,9 +48,10 @@ public class AnalysisJarService implements AnalysisService {
 		FindbugsExecutor findbugsExecutor;
 		Thread thread;
 		
-		System.out.println("開始排程掃描");
+		LogUtil.log("開始排程掃描", logPrefix);
 		
 		while (!files.isEmpty() && checkRunningJobs() < 5) {
+			System.out.println();
 			file = files.poll();
 			
 			findbugsExecutor = new FindbugsExecutor(file.getFileName(), path);
@@ -100,7 +104,7 @@ public class AnalysisJarService implements AnalysisService {
 			AnalysisFile analysisFile = (AnalysisFile) iterator.next();
 			
 			if (analysisFile.getFileName().equals(fileName)) {
-				System.out.println("從清單移除：" + fileName);
+				LogUtil.log("從清單移除：" + fileName, logPrefix);
 				iterator.remove();
 			}
 		}

@@ -31,7 +31,6 @@ public class AnalysisConfiguration implements SchedulingConfigurer {
 	public static final String webinfPathPrefix = "/WEB-INF/";
 	
 	public AnalysisConfiguration() {
-		System.out.println(this.hashCode());
 	}
 	
 	@Override
