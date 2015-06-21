@@ -19,10 +19,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import ntut.csie.detect.component.AnalysisFile;
 import ntut.csie.detect.configuration.AnalysisConfiguration;
+import ntut.csie.detect.executor.FindbugsExecutor;
 import ntut.csie.detect.service.AnalysisService;
 import ntut.csie.detect.service.FileManagerService;
 import ntut.csie.detect.util.LogUtil;
-import ntut.csie.detect.util.impl.FindbugsExecutor;
 
 @Service("AnalysisJarService")
 public class AnalysisJarService implements AnalysisService {

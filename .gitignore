@@ -1,4 +1,9 @@
-﻿.DS_Store
+.DS_Store
+
+# 排除外部執行
+!src/main/webapp/WEB-INF/findbugs
+!src/main/webapp/WEB-INF/pmd
+!src/main/webapp/WEB-INF/jad
 
 # eclipse project file
 .classpath
@@ -10,10 +15,10 @@
 tmp/
 
 # java build file
-*.jar
-*.war
-*.ear
-*.class
+# *.jar
+# *.war
+# *.ear
+# *.class
 build/
 
 # gradle
