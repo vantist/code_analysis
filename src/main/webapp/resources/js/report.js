@@ -23,7 +23,12 @@
 			$.post('./'+location.hash.substring(1), function(data) {
 				// report = xml2json.parser(data);
 				report = data;
-				$('.report').html(data);
+
+				if (confirm('輸出成html格式？')) {
+					$('.report').html(data);
+				} else {
+					$('.report').append(xml2json.parser(data, '', 'html'));
+				}
 			});
 		}
 	}

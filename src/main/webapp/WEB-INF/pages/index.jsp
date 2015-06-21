@@ -41,10 +41,10 @@
 				<form action="./analysis" method="post" enctype="multipart/form-data">
 					<div class="form-group">
 						<label for="jarFile">File input</label>
-						<input type="file" id="jarFile" accept=".jar,.war" name="file">
-						<p class="help-block">上傳欲分析之JAR(*.jar)</p>
+						<input type="file" id="jarFile" accept=".jar,.war" name="file" multiple>
+						<p class="help-block">上傳欲分析之JAR、WAR(*.jar/*.war)</p>
 					</div>
-					<button type="submit" class="btn btn-primary">分析</button>
+					<button type="submit" class="btn btn-primary btn-lg btn-block">分析</button>
 				</form>
 			</div>
 		</div>

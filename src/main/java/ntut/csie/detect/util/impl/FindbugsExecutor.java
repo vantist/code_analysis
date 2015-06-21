@@ -41,9 +41,9 @@ public class FindbugsExecutor implements CommandExecutorUtil {
         		"-jar",
         		"." + AnalysisConfiguration.findbugsPathPrefix + "findbugs.jar",
         		"-textui",
-        		"-html",
-//        		"-bugCategories",
-//        		"security",
+        		"-xml",
+        		"-bugCategories",
+        		"security",
         		"." + AnalysisConfiguration.analysisPathPrefix + command[0]
         );
 		processBuilder.directory(new File(directory));
@@ -51,13 +51,18 @@ public class FindbugsExecutor implements CommandExecutorUtil {
 
 	@Override
 	public void run() {
-		LogUtil.log("掃描任務開始初始", logPrefix);
+		LogUtil.log("掃描任務 (" + command[0] +") 開始初始", logPrefix);
 		init();
 		
 		try {
-			LogUtil.log("掃描任務開始運行", logPrefix);
+			LogUtil.log("掃描任務 (" + command[0] +") 開始運行", logPrefix);
 			
 			Process p = processBuilder.start();
+			
+			fileManagerService.saveFile(
+					directory + AnalysisConfiguration.errorPathPrefix + command[0] + ".log",
+					p.getErrorStream()
+			);
 			
 			fileManagerService.saveFile(
 					directory + AnalysisConfiguration.reportPathPrefix + command[0] + ".html",
@@ -70,7 +75,7 @@ public class FindbugsExecutor implements CommandExecutorUtil {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		} finally {
-			LogUtil.log("掃描任務運行結束", logPrefix);
+			LogUtil.log("掃描任務 (" + command[0] +") 運行結束", logPrefix);
 		}
 	}
 

@@ -1,6 +1,8 @@
 package ntut.csie.detect.controller;
 
 import java.io.IOException;
+import java.util.Iterator;
+import java.util.List;
 
 import javax.servlet.ServletContext;
 
@@ -38,10 +40,14 @@ public class AnalysisController {
 	 * 分析Jar檔
 	 */
 	@RequestMapping(value = "/analysis", method = RequestMethod.POST)
-	public String analysis(@RequestPart("file") MultipartFile file) {
-		if (!file.isEmpty()) {
-			AnalysisFile analysisFile = new AnalysisFile(file);
-			analysisJarService.save(analysisFile);
+	public String analysis(@RequestPart("file") List<MultipartFile> files) {
+		for (Iterator<MultipartFile> iterator = files.iterator(); iterator.hasNext();) {
+			MultipartFile file = (MultipartFile) iterator.next();
+			
+			if (!file.isEmpty()) {
+				AnalysisFile analysisFile = new AnalysisFile(file);
+				analysisJarService.save(analysisFile);
+			}
 		}
 		return "redirect:/";
 	}

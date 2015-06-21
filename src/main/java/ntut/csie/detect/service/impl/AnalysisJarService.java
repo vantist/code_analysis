@@ -87,8 +87,6 @@ public class AnalysisJarService implements AnalysisService {
 		for (Iterator<Thread> iterator = findbugsExecutors.iterator(); iterator.hasNext();) {
 			Thread thread = (Thread) iterator.next();
 			
-			System.out.println(thread.getId() + ", " + thread.getName() + ", " + thread.getState() + ", isAlive: " + thread.isAlive() + ", Priority: " + thread.getPriority());
-			
 			if (thread.getState().equals(State.TERMINATED)) {
 				removeFromAnalysisList(thread.getName());
 				iterator.remove();

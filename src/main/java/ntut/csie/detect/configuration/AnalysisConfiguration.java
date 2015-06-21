@@ -27,6 +27,7 @@ import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 public class AnalysisConfiguration implements SchedulingConfigurer {
 	public static final String analysisPathPrefix = "/WEB-INF/analysis/";
 	public static final String reportPathPrefix = "/WEB-INF/report/";
+	public static final String errorPathPrefix = "/WEB-INF/error/";
 	public static final String findbugsPathPrefix = "/WEB-INF/findbugs/lib/";
 	public static final String webinfPathPrefix = "/WEB-INF/";
 	
