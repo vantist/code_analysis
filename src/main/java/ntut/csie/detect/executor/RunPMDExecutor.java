@@ -26,8 +26,17 @@ public class RunPMDExecutor extends DecoratorExecutor {
 		
 		decompileExecutor.setNext(pmdExecutor);
 		decompressExecutor.setNext(decompileExecutor);
-		setNext(decompressExecutor);
 		
+		Thread decompressThread = new Thread(decompressExecutor);
+		
+		decompressThread.start();
+		
+		try {
+			decompressThread.join();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+				
 		super.run();
 	}
 

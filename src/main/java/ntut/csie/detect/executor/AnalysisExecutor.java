@@ -16,7 +16,15 @@ public class AnalysisExecutor extends DecoratorExecutor {
 		init();
 		
 		runPMDExecutor.setNext(findbugsExecutor);
-		setNext(runPMDExecutor);
+		
+		Thread runPMDThread = new Thread(runPMDExecutor);
+		runPMDThread.start();
+		try {
+			runPMDThread.join();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		super.run();
 	}

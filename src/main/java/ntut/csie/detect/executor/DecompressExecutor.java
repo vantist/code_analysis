@@ -59,8 +59,6 @@ public class DecompressExecutor extends DecoratorExecutor {
 			
 			Process p = processBuilder.start();
 			
-			LogUtil.log("解壓縮任務指令 ：" + processBuilder.command().toString(), logPrefix);
-			
 			fileManagerService.saveFile(
 					directory + AnalysisConfiguration.tarErrorPathPrefix + command[0] + ".log",
 					p.getErrorStream()
