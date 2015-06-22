@@ -17,4 +17,6 @@ public interface FileManagerService {
 	List<File> getFiles(String path);
 	
 	boolean removeFile(String path);
+	
+	void unZip(String path, String filePath);
 }

@@ -25,11 +25,19 @@ import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 @EnableAsync
 @EnableScheduling
 public class AnalysisConfiguration implements SchedulingConfigurer {
-	public static final String analysisPathPrefix = "/WEB-INF/analysis/";
-	public static final String reportPathPrefix = "/WEB-INF/report/";
-	public static final String errorPathPrefix = "/WEB-INF/error/";
-	public static final String findbugsPathPrefix = "/WEB-INF/findbugs/lib/";
 	public static final String webinfPathPrefix = "/WEB-INF/";
+	public static final String analysisPathPrefix = webinfPathPrefix + "analysis_files/";
+	public static final String analysisSourcePathPrefix = webinfPathPrefix + "analysis_source/";
+	public static final String findbugsReportPathPrefix = webinfPathPrefix + "findbugs_report/";
+	public static final String pmdReportPathPrefix = webinfPathPrefix + "pmd_report/";
+	public static final String findbugsErrorPathPrefix = webinfPathPrefix + "findbugs_error/";
+	public static final String pmdErrorPathPrefix = webinfPathPrefix + "pmd_error/";
+	public static final String jadErrorPathPrefix = webinfPathPrefix + "jad_error/";
+	public static final String tarErrorPathPrefix = webinfPathPrefix + "tar_error/";
+	public static final String findbugsPathPrefix = webinfPathPrefix + "findbugs/lib/";
+	public static final String pmdPathPrefix = webinfPathPrefix + "pmd/bin/";
+	public static final String decompressPathPrefix = webinfPathPrefix + "tmp/";
+	public static final String jadPathPrefix = webinfPathPrefix + "jad/";
 	
 	public AnalysisConfiguration() {
 	}

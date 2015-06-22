@@ -19,7 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import ntut.csie.detect.component.AnalysisFile;
 import ntut.csie.detect.configuration.AnalysisConfiguration;
-import ntut.csie.detect.executor.FindbugsExecutor;
+import ntut.csie.detect.executor.AnalysisExecutor;
 import ntut.csie.detect.service.AnalysisService;
 import ntut.csie.detect.service.FileManagerService;
 import ntut.csie.detect.util.LogUtil;
@@ -28,7 +28,7 @@ import ntut.csie.detect.util.LogUtil;
 public class AnalysisJarService implements AnalysisService {
 	private Queue<AnalysisFile> files = new LinkedList<AnalysisFile>();
 	private List<AnalysisFile> analysisFiles = new ArrayList<AnalysisFile>();
-	private Set<Thread> findbugsExecutors = new HashSet<Thread>();
+	private Set<Thread> analysisExecutors = new HashSet<Thread>();
 	private String path;
 	
 	private final String logPrefix = "[AnalysisJarService]";
@@ -45,21 +45,22 @@ public class AnalysisJarService implements AnalysisService {
 	@Scheduled(fixedDelay = 30000)
 	public void analysis() {
 		AnalysisFile file;
-		FindbugsExecutor findbugsExecutor;
+		AnalysisExecutor analysisExecutor;
 		Thread thread;
 		
-		LogUtil.log("開始排程掃描", logPrefix);
+		LogUtil.log("執行排程掃描，開始檢查動作", logPrefix);
 		
 		while (!files.isEmpty() && checkRunningJobs() < 5) {
-			System.out.println();
 			file = files.poll();
 			
-			findbugsExecutor = new FindbugsExecutor(file.getFileName(), path);
+			analysisExecutor = new AnalysisExecutor(file.getFileName(), path);
 			analysisFiles.add(file);
-			thread = new Thread(findbugsExecutor, file.getFileName());
-			findbugsExecutors.add(thread);
+			thread = new Thread(analysisExecutor, file.getFileName());
+			analysisExecutors.add(thread);
 			thread.start();
 		}
+		
+		LogUtil.log("排程動作結束", logPrefix);
 	}
 
 	@Override
@@ -84,7 +85,7 @@ public class AnalysisJarService implements AnalysisService {
 	public int checkRunningJobs() {
 		int count = 0;
 		
-		for (Iterator<Thread> iterator = findbugsExecutors.iterator(); iterator.hasNext();) {
+		for (Iterator<Thread> iterator = analysisExecutors.iterator(); iterator.hasNext();) {
 			Thread thread = (Thread) iterator.next();
 			
 			if (thread.getState().equals(State.TERMINATED)) {

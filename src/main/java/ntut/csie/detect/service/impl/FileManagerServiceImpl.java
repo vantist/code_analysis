@@ -2,6 +2,7 @@ package ntut.csie.detect.service.impl;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FilenameFilter;
@@ -10,6 +11,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import org.springframework.stereotype.Service;
 
@@ -18,7 +21,7 @@ import ntut.csie.detect.util.LogUtil;
 
 @Service("FileManagerService")
 public class FileManagerServiceImpl implements FileManagerService {
-	private final String logPrefix = "[FileManagerService]";	
+//	private final String logPrefix = "[FileManagerService]";	
 	
 	public void saveFile(String folder, String fileName, InputStream fileInputStream) throws IOException {
 		saveFile(folder.concat(File.separator).concat(fileName), fileInputStream);
@@ -41,7 +44,7 @@ public class FileManagerServiceImpl implements FileManagerService {
 
 	        while (line != null) {
 	            sb.append(line);
-	            sb.append("\n");
+	            sb.append('\n');
 	            line = br.readLine();
 	        }
 	        return sb.toString();
@@ -54,8 +57,9 @@ public class FileManagerServiceImpl implements FileManagerService {
 	public boolean checkFiles(String path) {
 		File folder = new File(path);
 		
-		if (folder.isDirectory() && folder.list(new AnalysisFileFilter()).length > 0)
+		if (folder.isDirectory() && folder.list(new AnalysisFileFilter()).length > 0) {
 			return true;
+		}
 		
 		return false;
 	}
@@ -78,8 +82,9 @@ public class FileManagerServiceImpl implements FileManagerService {
 			for (int i = 0; i < file.listFiles(analysisFileFilter).length; i++) {
 				childFile = file.listFiles(analysisFileFilter)[i];
 				
-				if (childFile.isHidden())
+				if (childFile.isHidden()) {
 					continue;
+				}
 				
 				if (childFile.isDirectory()) {
 					addFolderFiles(childFile, fileList);
@@ -96,6 +101,63 @@ public class FileManagerServiceImpl implements FileManagerService {
 	public boolean removeFile(String path) {
 		File file = new File(path);
 		return file.delete();
+	}
+
+	@Override
+	public void unZip(String path, String filePath) {
+		File directory = new File(path);
+        
+		// if the output directory doesn't exist, create it
+		if(!directory.exists()) 
+			directory.mkdirs();
+
+		// buffer for read and write data to file
+		byte[] buffer = new byte[2048];
+        
+		try {
+			FileInputStream fInput = new FileInputStream(filePath);
+			ZipInputStream zipInput = new ZipInputStream(fInput);
+            
+			ZipEntry entry = zipInput.getNextEntry();
+            
+			while (entry != null) {
+				String entryName = entry.getName();
+				File file = new File(path + File.separator + entryName);
+                
+				System.out.println("Unzip file " + entryName + " to " + file.getAbsolutePath());
+                
+				// create the directories of the zip directory
+				if (entry.isDirectory()) {
+					File newDir = new File(file.getAbsolutePath());
+					if (!newDir.exists()) {
+						boolean success = newDir.mkdirs();
+						if (success == false) {
+							System.out.println("Problem creating Folder");
+						}
+					}
+                }
+				else {
+					FileOutputStream fOutput = new FileOutputStream(file);
+					int count = 0;
+					while ((count = zipInput.read(buffer)) > 0) {
+						// write 'count' bytes to the file output stream
+						fOutput.write(buffer, 0, count);
+					}
+					fOutput.close();
+				}
+				// close ZipEntry and take the next one
+				zipInput.closeEntry();
+				entry = zipInput.getNextEntry();
+			}
+            
+			// close the last ZipEntry
+			zipInput.closeEntry();
+            
+			zipInput.close();
+			fInput.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }
 

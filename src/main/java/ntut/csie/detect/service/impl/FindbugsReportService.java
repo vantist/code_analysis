@@ -26,7 +26,7 @@ public class FindbugsReportService implements ReportService {
 	
 	@Autowired
 	public FindbugsReportService(ServletContext context) {
-		path = context.getRealPath(AnalysisConfiguration.reportPathPrefix);
+		path = context.getRealPath(AnalysisConfiguration.findbugsReportPathPrefix);
 	}
 	
 	private void updateList() {
@@ -48,10 +48,11 @@ public class FindbugsReportService implements ReportService {
 	public boolean checkReport() {
 		boolean exist = fileManagerService.checkFiles(path);
 		
-		if (exist)
+		if (exist) {
 			updateList();
-		else if (!exist && reports.size() > 0)
+		} else if (!exist && reports.size() > 0) {
 			reports.clear();
+		}
 		
 		return exist;
 	}

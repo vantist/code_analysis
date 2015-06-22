@@ -8,22 +8,26 @@ public class LogUtil {
 	private static final String errorLogPrefix = "[error] ";
 
 	public static void log(String msg) {
-		if (enableLog)
+		if (enableLog) {
 			System.out.println(infoLogPrefix + msg);
+		}
 	}
 
 	public static void log(String msg, String logPrefix) {
-		if (enableLog)
+		if (enableLog) {
 			System.out.println(logPrefix + infoLogPrefix + msg);
+		}
 	}
 
 	public static void errorLog(String msg) {
-		if (enableLog)
+		if (enableLog) {
 			System.err.println(errorLogPrefix + msg);
+		}
 	}
 
 	public static void errorLog(String msg, String logPrefix) {
-		if (enableLog)
+		if (enableLog) {
 			System.err.println(logPrefix + errorLogPrefix + msg);
+		}
 	}
 }

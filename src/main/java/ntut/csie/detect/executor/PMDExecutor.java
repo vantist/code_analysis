@@ -10,25 +10,25 @@ import ntut.csie.detect.service.FileManagerService;
 import ntut.csie.detect.service.impl.FileManagerServiceImpl;
 import ntut.csie.detect.util.LogUtil;
 
-public class FindbugsExecutor extends DecoratorExecutor {
+public class PMDExecutor extends DecoratorExecutor {
 	private String[] command;
 	private String directory = "";
 	private ProcessBuilder processBuilder;
 	
-	private final String logPrefix = "[FindbugsExecutor]";
+	private final String logPrefix = "[PMDExecutor]";
 	
 	@Autowired
 	FileManagerService fileManagerService;
 	
-	public FindbugsExecutor() {
+	public PMDExecutor() {
 	}
 	
-	public FindbugsExecutor(String command, String directory) {
+	public PMDExecutor(String command, String directory) {
 		this.command = command.split(" ");
 		this.directory = directory;
 	}
 	
-	public FindbugsExecutor(String[] command, String directory) {
+	public PMDExecutor(String[] command, String directory) {
 		this.command = command;
 		this.directory = directory;
 	}
@@ -39,15 +39,17 @@ public class FindbugsExecutor extends DecoratorExecutor {
 		}
 		
 		processBuilder = new ProcessBuilder(
-				"java", 
-        		"-jar",
-        		"." + AnalysisConfiguration.findbugsPathPrefix + "findbugs.jar",
-        		"-textui",
-        		"-xml",
-        		"-bugCategories",
-        		"security",
-        		"." + AnalysisConfiguration.analysisPathPrefix + command[0]
+				"/bin/bash",
+        		"." + AnalysisConfiguration.pmdPathPrefix + "run.sh",
+        		"pmd",
+        		"-d",
+        		"." + AnalysisConfiguration.analysisSourcePathPrefix + command[0],
+        		"-f",
+        		"html",
+        		"-R",
+        		"." + AnalysisConfiguration.pmdPathPrefix + "ruleset.xml"
         );
+		
 		processBuilder.directory(new File(directory));
 	}
 
@@ -62,12 +64,12 @@ public class FindbugsExecutor extends DecoratorExecutor {
 			Process p = processBuilder.start();
 			
 			fileManagerService.saveFile(
-					directory + AnalysisConfiguration.findbugsErrorPathPrefix + command[0] + ".log",
+					directory + AnalysisConfiguration.pmdErrorPathPrefix + command[0] + ".log",
 					p.getErrorStream()
 			);
 			
 			fileManagerService.saveFile(
-					directory + AnalysisConfiguration.findbugsReportPathPrefix + command[0] + ".html",
+					directory + AnalysisConfiguration.pmdReportPathPrefix + command[0] + ".html",
 					p.getInputStream()
 			);
 			
@@ -82,7 +84,7 @@ public class FindbugsExecutor extends DecoratorExecutor {
 		
 		super.run();
 	}
-
+	
 	@Override
 	public void setCommand(String command) {
 		this.command = command.split(" ");

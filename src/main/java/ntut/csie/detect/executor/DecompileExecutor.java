@@ -10,65 +10,59 @@ import ntut.csie.detect.service.FileManagerService;
 import ntut.csie.detect.service.impl.FileManagerServiceImpl;
 import ntut.csie.detect.util.LogUtil;
 
-public class FindbugsExecutor extends DecoratorExecutor {
+public class DecompileExecutor extends DecoratorExecutor {
 	private String[] command;
 	private String directory = "";
 	private ProcessBuilder processBuilder;
 	
-	private final String logPrefix = "[FindbugsExecutor]";
+	private final String logPrefix = "[DecompileExecutor]";
 	
 	@Autowired
 	FileManagerService fileManagerService;
 	
-	public FindbugsExecutor() {
+	public DecompileExecutor() {
 	}
 	
-	public FindbugsExecutor(String command, String directory) {
+	public DecompileExecutor(String command, String directory) {
 		this.command = command.split(" ");
 		this.directory = directory;
 	}
 	
-	public FindbugsExecutor(String[] command, String directory) {
+	public DecompileExecutor(String[] command, String directory) {
 		this.command = command;
 		this.directory = directory;
 	}
-
+	
 	public void init() {
 		if (fileManagerService == null) {
 			fileManagerService = new FileManagerServiceImpl();
 		}
 		
 		processBuilder = new ProcessBuilder(
-				"java", 
-        		"-jar",
-        		"." + AnalysisConfiguration.findbugsPathPrefix + "findbugs.jar",
-        		"-textui",
-        		"-xml",
-        		"-bugCategories",
-        		"security",
-        		"." + AnalysisConfiguration.analysisPathPrefix + command[0]
+        		"." + AnalysisConfiguration.jadPathPrefix + "jad",
+        		"-d",
+        		"." + AnalysisConfiguration.analysisSourcePathPrefix + command[0],
+        		"-r",
+        		"-o",
+        		"-sjava",
+        		"." + AnalysisConfiguration.decompressPathPrefix + command[0] + "/**/*.class"
         );
 		processBuilder.directory(new File(directory));
 	}
 
 	@Override
 	public void run() {
-		LogUtil.log("掃描任務 (" + command[0] +") 開始初始", logPrefix);
+		LogUtil.log("反編譯任務 (" + command[0] +") 開始初始", logPrefix);
 		init();
 		
 		try {
-			LogUtil.log("掃描任務 (" + command[0] +") 開始運行", logPrefix);
+			LogUtil.log("反編譯任務 (" + command[0] +") 開始運行", logPrefix);
 			
 			Process p = processBuilder.start();
 			
 			fileManagerService.saveFile(
-					directory + AnalysisConfiguration.findbugsErrorPathPrefix + command[0] + ".log",
+					directory + AnalysisConfiguration.jadErrorPathPrefix + command[0] + ".log",
 					p.getErrorStream()
-			);
-			
-			fileManagerService.saveFile(
-					directory + AnalysisConfiguration.findbugsReportPathPrefix + command[0] + ".html",
-					p.getInputStream()
 			);
 			
 			p.waitFor();
@@ -77,7 +71,7 @@ public class FindbugsExecutor extends DecoratorExecutor {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		} finally {
-			LogUtil.log("掃描任務 (" + command[0] +") 運行結束", logPrefix);
+			LogUtil.log("反編譯任務 (" + command[0] +") 運行結束", logPrefix);
 		}
 		
 		super.run();
