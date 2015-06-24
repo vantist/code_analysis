@@ -43,7 +43,7 @@ public class FindbugsExecutor extends DecoratorExecutor {
         		"-jar",
         		"." + AnalysisConfiguration.findbugsPathPrefix + "findbugs.jar",
         		"-textui",
-        		"-xml",
+        		"-html",
         		"-bugCategories",
         		"security",
         		"." + AnalysisConfiguration.analysisPathPrefix + command[0]

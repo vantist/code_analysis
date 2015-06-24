@@ -8,13 +8,12 @@ import javax.servlet.ServletContext;
 
 import ntut.csie.detect.component.AnalysisFile;
 import ntut.csie.detect.component.AnalysisState;
+import ntut.csie.detect.report.ReportService;
+import ntut.csie.detect.service.AnalysisService;
 import ntut.csie.detect.service.FileManagerService;
-import ntut.csie.detect.service.ReportService;
-import ntut.csie.detect.service.impl.AnalysisJarService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -28,7 +27,7 @@ public class AnalysisController {
 	private ServletContext servletContext;
 	
 	@Autowired
-	private AnalysisJarService analysisJarService;
+	private AnalysisService analysisJarService;
 	
 	@Autowired
 	private ReportService reportService;

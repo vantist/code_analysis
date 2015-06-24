@@ -1,36 +1,31 @@
-package ntut.csie.detect.service.impl;
+package ntut.csie.detect.report;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.ServletContext;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Service;
-
-import ntut.csie.detect.component.Report;
 import ntut.csie.detect.configuration.AnalysisConfiguration;
+import ntut.csie.detect.report.component.Report;
 import ntut.csie.detect.service.FileManagerService;
-import ntut.csie.detect.service.ReportService;
 
-@Service("FindbugsReportService")
-public class FindbugsReportService implements ReportService {
+public class FindBugsReportService implements ReportService {
 	private String path = "";
 	private List<Report> reports = new ArrayList<Report>();
+	private FilenameFilter filenameFilter;
+	private FileManagerService fileManagerService;
 	
-	@Autowired
-	FileManagerService fileManagerService;
-	
-	@Autowired
-	public FindbugsReportService(ServletContext context) {
+	public FindBugsReportService(ServletContext context, FileManagerService fileManagerService) {
+		this.fileManagerService = fileManagerService;
 		path = context.getRealPath(AnalysisConfiguration.findbugsReportPathPrefix);
+		filenameFilter = new FindbugsFilenameFilter();
 	}
 	
 	private void updateList() {
-		List<File> files = fileManagerService.getFiles(path);
+		List<File> files = fileManagerService.getFiles(path, filenameFilter);
 		reports.clear();
 		
 		for (Iterator<File> iterator = files.iterator(); iterator.hasNext();) {
@@ -39,14 +34,9 @@ public class FindbugsReportService implements ReportService {
 		}
 	}
 	
-	@Scheduled(fixedDelay = 1000)
-	private void scheduledCheck() {
-		checkReport();
-	}
-	
 	@Override
 	public boolean checkReport() {
-		boolean exist = fileManagerService.checkFiles(path);
+		boolean exist = fileManagerService.checkFiles(path, filenameFilter);
 		
 		if (exist) {
 			updateList();
@@ -66,9 +56,15 @@ public class FindbugsReportService implements ReportService {
 	public Report getReport(int index) {
 		return reports.get(index);
 	}
+}
 
+/*
+ * 實做附檔名篩選器
+ */
+class FindbugsFilenameFilter implements FilenameFilter {
 	@Override
-	public String getReportPath() {
-		return path;
+	public boolean accept(File dir, String name) {
+		return name.endsWith(".xml")
+			|| name.endsWith(".html");
 	}
 }

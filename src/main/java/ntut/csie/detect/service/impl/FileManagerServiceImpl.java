@@ -54,10 +54,10 @@ public class FileManagerServiceImpl implements FileManagerService {
 	}
 
 	@Override
-	public boolean checkFiles(String path) {
+	public boolean checkFiles(String path, FilenameFilter filenameFilter) {
 		File folder = new File(path);
 		
-		if (folder.isDirectory() && folder.list(new AnalysisFileFilter()).length > 0) {
+		if (folder.isDirectory() && folder.list(filenameFilter).length > 0) {
 			return true;
 		}
 		
@@ -65,29 +65,28 @@ public class FileManagerServiceImpl implements FileManagerService {
 	}
 
 	@Override
-	public List<File> getFiles(String path) {
+	public List<File> getFiles(String path, FilenameFilter filenameFilter) {
 		File folder = new File(path);
 		List<File> files = new ArrayList<File>();
 		
-		addFolderFiles(folder, files);
+		addFolderFiles(folder, files, filenameFilter);
 		
 		return files;
 	}
 	
-	private void addFolderFiles(File file, List<File> fileList) {
+	private void addFolderFiles(File file, List<File> fileList, FilenameFilter filenameFilter) {
 		File childFile;
-		AnalysisFileFilter analysisFileFilter = new AnalysisFileFilter();
 		
 		try	{	
-			for (int i = 0; i < file.listFiles(analysisFileFilter).length; i++) {
-				childFile = file.listFiles(analysisFileFilter)[i];
+			for (int i = 0; i < file.listFiles(filenameFilter).length; i++) {
+				childFile = file.listFiles(filenameFilter)[i];
 				
 				if (childFile.isHidden()) {
 					continue;
 				}
 				
 				if (childFile.isDirectory()) {
-					addFolderFiles(childFile, fileList);
+					addFolderFiles(childFile, fileList, filenameFilter);
 				} else {
 					fileList.add(childFile);
 				}
@@ -158,20 +157,6 @@ public class FileManagerServiceImpl implements FileManagerService {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	}
-}
-
-/*
- * 實做附檔名篩選器
- */
-class AnalysisFileFilter implements FilenameFilter {
-	@Override
-	public boolean accept(File dir, String name) {
-		return name.endsWith(".jar")
-			|| name.endsWith(".xml")
-			|| name.endsWith(".war")
-			|| name.endsWith(".zip")
-			|| name.endsWith(".html");
 	}
 }
 

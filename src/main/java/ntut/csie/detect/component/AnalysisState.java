@@ -2,6 +2,8 @@ package ntut.csie.detect.component;
 
 import java.util.List;
 
+import ntut.csie.detect.report.component.Report;
+
 import org.springframework.stereotype.Component;
 
 @Component

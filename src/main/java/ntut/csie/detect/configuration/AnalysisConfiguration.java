@@ -3,10 +3,10 @@ package ntut.csie.detect.configuration;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
+import ntut.csie.detect.report.FindBugsReportService;
+import ntut.csie.detect.report.ReportService;
 import ntut.csie.detect.service.AnalysisService;
-import ntut.csie.detect.service.ReportService;
 import ntut.csie.detect.service.impl.AnalysisJarService;
-import ntut.csie.detect.service.impl.FindbugsReportService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

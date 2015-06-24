@@ -1,12 +1,10 @@
-package ntut.csie.detect.service;
+package ntut.csie.detect.report;
 
 import java.util.List;
 
-import ntut.csie.detect.component.Report;
+import ntut.csie.detect.report.component.Report;
 
 public interface ReportService {
-	String getReportPath();	
-	
 	// 檢查是否有報表
 	boolean checkReport();
 	

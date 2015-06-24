@@ -1,4 +1,4 @@
-package ntut.csie.detect.component;
+package ntut.csie.detect.report.component;
 
 import java.io.File;
 
